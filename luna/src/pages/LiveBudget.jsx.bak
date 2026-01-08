@@ -1,0 +1,480 @@
+import React, { useEffect, useMemo, useState } from "react";
+import "./LiveBudget.css";
+
+const PROFILE_KEY = "moneyProfile";
+const TXN_KEY = "liveBudgetTransactions";
+
+const buildCategoriesFromProfile = (profile) => {
+  const catMap = new Map();
+  (profile.expenses || []).forEach((exp) => {
+    const key = exp.category || exp.name || "Other";
+    const limit = exp.monthly ?? exp.amount ?? 0;
+    const label = exp.name || key;
+    const icon = exp.icon || "•";
+    catMap.set(key, { key, label, icon, limit });
+  });
+  return Array.from(catMap.values());
+};
+
+const LiveBudget = ({ onNavigate = () => {}, canGoBack }) => {
+  const [profile, setProfile] = useState({ incomes: [], expenses: [], name: "" });
+  const [transactions, setTransactions] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [draft, setDraft] = useState({ type: "expense", category: "", amount: "", note: "" });
+  const [range, setRange] = useState("month"); // day | week | month | year
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [showRecent, setShowRecent] = useState(false);
+
+  const loadTransactions = () => {
+    try {
+      const storedTx = localStorage.getItem(TXN_KEY);
+      if (!storedTx) return [];
+      const parsed = JSON.parse(storedTx);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
+    }
+  };
+
+  const persistTransactions = (updater) => {
+    setTransactions((prev) => {
+      const next = typeof updater === "function" ? updater(prev) : updater;
+      try {
+        localStorage.setItem(TXN_KEY, JSON.stringify(next));
+      } catch (e) {
+        /* ignore storage issues */
+      }
+      return next;
+    });
+  };
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(PROFILE_KEY);
+      if (stored) setProfile(JSON.parse(stored));
+    } catch (e) {
+      /* ignore */
+    }
+    setTransactions(loadTransactions());
+  }, []);
+
+  const categories = useMemo(() => buildCategoriesFromProfile(profile), [profile]);
+  const incomeTotal = useMemo(
+    () => (profile.incomes || []).reduce((s, i) => s + (i.monthly ?? i.amount ?? 0), 0),
+    [profile.incomes]
+  );
+
+  const summary = useMemo(() => {
+    const spent = transactions.filter((t) => t.type === "expense").reduce((s, t) => s + (Number(t.amount) || 0), 0);
+    const received = transactions.filter((t) => t.type === "income").reduce((s, t) => s + (Number(t.amount) || 0), 0);
+    const totalIncome = incomeTotal + received;
+    const leftover = totalIncome - spent;
+    const budgeted = categories.reduce((s, c) => s + (Number(c.limit) || 0), 0);
+    return { spent, leftover, totalIncome, budgeted };
+  }, [transactions, incomeTotal, categories]);
+
+  const rangeFiltered = useMemo(() => {
+    const now = new Date();
+    const start = new Date(now);
+    if (range === "day") {
+      start.setHours(0, 0, 0, 0);
+    } else if (range === "week") {
+      const day = now.getDay();
+      start.setDate(now.getDate() - day);
+      start.setHours(0, 0, 0, 0);
+    } else if (range === "month") {
+      start.setDate(1);
+      start.setHours(0, 0, 0, 0);
+    } else if (range === "year") {
+      start.setMonth(0, 1);
+      start.setHours(0, 0, 0, 0);
+    }
+    return transactions.filter((t) => {
+      const d = new Date(t.date || Date.now());
+      return d >= start && d <= now;
+    });
+  }, [transactions, range]);
+
+  const historyBlocks = useMemo(() => {
+    const groups = new Map();
+    rangeFiltered.forEach((t) => {
+      const d = new Date(t.date || Date.now());
+      const key = d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+      if (!groups.has(key)) groups.set(key, { income: 0, expense: 0, list: [] });
+      const g = groups.get(key);
+      const amt = Number(t.amount) || 0;
+      if (t.type === "income") g.income += amt;
+      else g.expense += amt;
+      g.list.push(t);
+    });
+    return Array.from(groups.entries())
+      .map(([date, data]) => ({ date, ...data }))
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+  }, [rangeFiltered]);
+
+  const handleAdd = () => {
+    const amt = Number(draft.amount);
+    if (!amt || amt <= 0) return;
+    if (draft.type === "expense" && !draft.category) {
+      alert("Pick a category for this expense.");
+      return;
+    }
+    const normalizedDraft = draft.type === "income" ? { ...draft, category: "Income" } : draft;
+    persistTransactions((prev) => [
+      { id: Date.now(), ...normalizedDraft, amount: amt, date: new Date().toISOString() },
+      ...prev.slice(0, 99),
+    ]);
+    setDraft((d) => ({ ...d, amount: "", note: "" }));
+    setShowForm(false);
+  };
+
+  const deleteTransaction = (id) => {
+    persistTransactions((prev) => prev.filter((t) => t.id !== id));
+  };
+
+  return (
+    <div className="live-budget-page">
+      <header className="lb-header">
+        <div className="top-controls">
+          <div className="menu-container">
+            {menuOpen && (
+              <div
+                style={{ position: "fixed", inset: 0, zIndex: 150, background: "transparent" }}
+                onClick={() => setMenuOpen(false)}
+              />
+            )}
+            <div
+              className="hamburger"
+              onClick={(e) => {
+                e.stopPropagation();
+                setMenuOpen((open) => !open);
+              }}
+            >
+              <div />
+              <div />
+              <div />
+            </div>
+            <div className="dropdown-menu" style={{ display: menuOpen ? "block" : "none" }}>
+              <a className="active">Track Spending</a>
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMenuOpen(false);
+                  onNavigate("dashboard");
+                }}
+              >
+                Dashboard
+              </a>
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMenuOpen(false);
+                  onNavigate("snapshot");
+                }}
+              >
+                Debt Snapshot
+              </a>
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMenuOpen(false);
+                  onNavigate("budget");
+                }}
+              >
+                Money Coach
+              </a>
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMenuOpen(false);
+                  onNavigate("goals");
+                }}
+              >
+                Goals
+              </a>
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMenuOpen(false);
+                  onNavigate("goals");
+                }}
+              >
+                Goals
+              </a>
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMenuOpen(false);
+                  onNavigate("import");
+                }}
+              >
+                Bank Statements
+              </a>
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMenuOpen(false);
+                  onNavigate("onboarding");
+                }}
+              >
+                Onboarding
+              </a>
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMenuOpen(false);
+                  onNavigate("settings");
+                }}
+              >
+                Settings
+              </a>
+              <a
+                href="/Local/Luna Login"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMenuOpen(false);
+                  window.location.replace("/Local/Luna Login");
+                }}
+              >
+                Logout
+              </a>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div className="lb-title">Track Spending</div>
+          <div className="lb-subtitle">Track spending in real time and stay on plan.</div>
+        </div>
+      </header>
+
+      <div className="lb-container">
+        <div className="lb-card lb-highlight">
+          <div className="lb-summary-grid">
+            <div>
+              <div className="lb-label">Monthly Income</div>
+              <div className="lb-value">${summary.totalIncome.toFixed(2)}</div>
+            </div>
+            <div>
+              <div className="lb-label">Budgeted</div>
+              <div className="lb-value">${summary.budgeted.toFixed(2)}</div>
+            </div>
+            <div>
+              <div className="lb-label">Spent</div>
+              <div className="lb-value">${summary.spent.toFixed(2)}</div>
+            </div>
+            <div>
+              <div className={`lb-value leftover ${summary.leftover < 0 ? "neg" : ""}`}>
+                ${summary.leftover.toFixed(2)}
+              </div>
+              <div className="lb-label">Leftover</div>
+            </div>
+          </div>
+          <div className="lb-cta-row">
+            <button className="primary-btn" onClick={() => setShowForm(true)}>
+              Add Transaction
+            </button>
+          </div>
+        </div>
+
+        <div className="lb-card">
+          <div className="lb-card-title">Spending Pace</div>
+          <div className="lb-helper">Tracks your spending against income in real time.</div>
+          <div className="lb-bar-card">
+            <div className="lb-bar-header">
+              <div>
+                <div className="lb-label">Spent so far</div>
+                <div className="lb-value">${summary.spent.toFixed(2)}</div>
+              </div>
+              <div>
+                <div className="lb-label">Target (income)</div>
+                <div className="lb-value">${summary.totalIncome.toFixed(2)}</div>
+              </div>
+            </div>
+            <div className="lb-bar-shell">
+              <div
+                className={`lb-bar-fill ${summary.leftover < 0 ? "bad" : summary.spent / (summary.totalIncome || 1) > 0.8 ? "warn" : "good"}`}
+                style={{ width: `${Math.min((summary.spent / (summary.totalIncome || 1)) * 100, 140)}%` }}
+              />
+            </div>
+            <div className="lb-bar-footer">
+              {summary.leftover < 0 ? (
+                <span className="lb-chip bad">Over budget</span>
+              ) : summary.spent / (summary.totalIncome || 1) > 0.8 ? (
+                <span className="lb-chip warn">Tight</span>
+              ) : (
+                <span className="lb-chip good">On track</span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="lb-card">
+          <div className="lb-card-title-row">
+            <div className="lb-card-title">History</div>
+            <button className="lb-collapse-btn" onClick={() => setShowHistory((v) => !v)} aria-label="Toggle history">
+              {showHistory ? "\u25BC" : "\u25B6"}
+            </button>
+          </div>
+          <div className="lb-range-row">
+            {["day", "week", "month", "year"].map((r) => (
+              <button key={r} className={`lb-range-btn ${range === r ? "active" : ""}`} onClick={() => setRange(r)}>
+                {r === "day" ? "Today" : r === "week" ? "This Week" : r === "month" ? "This Month" : "This Year"}
+              </button>
+            ))}
+          </div>
+          {showHistory &&
+            (historyBlocks.length === 0 ? (
+              <div className="lb-helper">No activity yet in this range.</div>
+            ) : (
+              <div className="lb-history">
+                {historyBlocks.map((block) => (
+                  <div key={block.date} className="lb-history-card">
+                    <div className="lb-history-head">
+                      <div className="lb-history-date">{block.date}</div>
+                      <div className="lb-history-sum">
+                        <span className="pos">+${block.income.toFixed(2)}</span>
+                        <span className="neg">-${block.expense.toFixed(2)}</span>
+                      </div>
+                    </div>
+                    <div className="lb-history-list">
+                      {block.list.slice(0, 4).map((t) => (
+                        <div key={t.id} className="lb-history-row">
+                          <span className="lb-history-label">{t.note || t.category || "Entry"}</span>
+                          <span className={`lb-history-amt ${t.type === "income" ? "pos" : "neg"}`}>
+                            {t.type === "income" ? "+" : "-"}${Number(t.amount || 0).toFixed(2)}
+                          </span>
+                        </div>
+                      ))}
+                      {block.list.length > 4 && <div className="lb-helper">+{block.list.length - 4} more</div>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+        </div>
+
+        <div className="lb-card">
+          <div className="lb-card-title-row">
+            <div className="lb-card-title">Recent Activity</div>
+            <button className="lb-collapse-btn" onClick={() => setShowRecent((v) => !v)} aria-label="Toggle recent activity">
+              {showRecent ? "\u25BC" : "\u25B6"}
+            </button>
+          </div>
+          {showRecent &&
+            (transactions.length === 0 ? (
+            <div className="lb-helper">No transactions yet. Add one to get started.</div>
+          ) : (
+            <div className="lb-feed">
+              {transactions.slice(0, 12).map((t) => (
+                <div key={t.id} className="lb-feed-row">
+                  <div>
+                    <div className="lb-feed-title">
+                      {t.type === "income" ? "Income" : "Expense"} · {t.category || "Uncategorized"}
+                    </div>
+                    <div className="lb-feed-note">{t.note || "No note"}</div>
+                  </div>
+                  <div className={`lb-feed-amt ${t.type === "income" ? "pos" : "neg"}`}>
+                    {t.type === "income" ? "+" : "-"}${Number(t.amount || 0).toFixed(2)}
+                  </div>
+                  <button className="lb-delete-btn" onClick={() => deleteTransaction(t.id)}>
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {canGoBack && (
+        <button className="mobile-back-btn" type="button" onClick={() => onNavigate("back")}>
+          &lt;
+        </button>
+      )}
+
+      {showForm && (
+        <div className="lb-modal" onClick={(e) => e.target === e.currentTarget && setShowForm(false)}>
+          <div className="lb-modal-content">
+            <div className="lb-modal-title">Add Transaction</div>
+            <label className="lb-form-label">Type</label>
+            <div className="lb-toggle">
+              {["expense", "income"].map((type) => (
+                <button
+                  key={type}
+                  className={`lb-toggle-btn ${draft.type === type ? "active" : ""}`}
+                  onClick={() =>
+                    setDraft((d) => ({
+                      ...d,
+                      type,
+                      category: type === "income" ? "Income" : "",
+                    }))
+                  }
+                >
+                  {type === "expense" ? "Expense" : "Income"}
+                </button>
+              ))}
+            </div>
+
+            {draft.type === "expense" ? (
+              <>
+                <label className="lb-form-label">Category</label>
+                <select
+                  value={draft.category}
+                  onChange={(e) => setDraft((d) => ({ ...d, category: e.target.value }))}
+                  className="lb-input"
+                >
+                  <option value="">Select</option>
+                  {categories.map((c) => (
+                    <option key={c.key} value={c.key}>
+                      {c.label}
+                    </option>
+                  ))}
+                </select>
+              </>
+            ) : (
+              <div className="lb-helper" style={{ marginTop: 8 }}>
+                Income will be tracked without a category.
+              </div>
+            )}
+
+            <label className="lb-form-label">Amount</label>
+            <input
+              className="lb-input"
+              type="number"
+              min="0"
+              step="0.01"
+              value={draft.amount}
+              onChange={(e) => setDraft((d) => ({ ...d, amount: e.target.value }))}
+              placeholder="e.g. 42.50"
+            />
+
+            <label className="lb-form-label">Note (optional)</label>
+            <input
+              className="lb-input"
+              value={draft.note}
+              onChange={(e) => setDraft((d) => ({ ...d, note: e.target.value }))}
+              placeholder="e.g. Grocery run"
+            />
+
+            <div className="lb-modal-actions">
+              <button className="primary-btn" onClick={handleAdd}>
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default LiveBudget;

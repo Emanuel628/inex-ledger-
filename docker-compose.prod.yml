@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  web:
+    restart: unless-stopped
+    ports:
+      - "4173:80"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.75"
+          memory: 750M
+
+  api:
+    restart: unless-stopped
+    ports:
+      - target: 4000
+        published: 4000
+        protocol: tcp
+        mode: host
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+
+  db:
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 1G

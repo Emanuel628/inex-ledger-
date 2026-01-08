@@ -1,0 +1,196 @@
+.budget-period-guide-page {
+  min-height: 100vh;
+  color: #004d99;
+  position: relative;
+  padding-bottom: 60px;
+}
+
+.budget-period-guide-header {
+  padding: 24px 20px 12px;
+  position: relative;
+  text-align: center;
+}
+
+.budget-period-guide-hero {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.budget-period-guide-hero h1 {
+  margin: 6px 0 8px;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #004d99;
+}
+
+.budget-period-guide-hero p {
+  margin: 0;
+  color: #4f7bab;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.budget-period-guide-main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 16px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.75rem;
+  color: #7dd3fc;
+  font-weight: 700;
+}
+
+.guide-card {
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 8px 20px rgba(0, 77, 153, 0.15);
+  padding: 18px;
+}
+
+.guide-card h2 {
+  margin: 0 0 8px;
+  color: #004d99;
+  font-size: 1.4rem;
+}
+
+.guide-card h3 {
+  margin: 0 0 8px;
+  color: #004d99;
+  font-size: 1.05rem;
+}
+
+.guide-card p {
+  margin: 0 0 12px;
+  color: #4f7bab;
+}
+
+.guide-card ul {
+  margin: 0;
+  padding-left: 18px;
+  color: #0f172a;
+}
+
+.guide-split {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.guide-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.guide-mini-card {
+  border-radius: 14px;
+  background: #eff6ff;
+  border: 1px solid #c7d2fe;
+  padding: 12px 14px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.guide-mini-card h4 {
+  margin: 0 0 6px;
+  color: #0b6fcd;
+  font-size: 1rem;
+}
+
+.guide-mini-card p {
+  margin: 0;
+  color: #3b5f8a;
+  font-size: 0.95rem;
+}
+
+.guide-callout {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  color: #0b4f9c;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.guide-timeline {
+  display: grid;
+  gap: 12px;
+}
+
+.guide-timeline p {
+  margin: 4px 0 0;
+  color: #4f7bab;
+}
+
+.guide-bullet {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: #0b6fcd;
+}
+
+.guide-footer {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0 24px;
+}
+
+body.dark-mode .budget-period-guide-page {
+  color: #e2e8f0;
+}
+
+body.dark-mode .budget-period-guide-hero h1 {
+  color: #e2e8f0;
+}
+
+body.dark-mode .budget-period-guide-hero p {
+  color: #cbd5e1;
+}
+
+body.dark-mode .guide-card {
+  background: #1e293b;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .guide-card h2,
+body.dark-mode .guide-card h3 {
+  color: #e2e8f0;
+}
+
+body.dark-mode .guide-card p {
+  color: #cbd5e1;
+}
+
+body.dark-mode .guide-card ul {
+  color: #e2e8f0;
+}
+
+body.dark-mode .guide-mini-card {
+  background: #0f172a;
+  border-color: #1d4ed8;
+}
+
+body.dark-mode .guide-mini-card h4 {
+  color: #93c5fd;
+}
+
+body.dark-mode .guide-mini-card p {
+  color: #cbd5e1;
+}
+
+body.dark-mode .guide-callout {
+  background: #0b1225;
+  border-color: #1d4ed8;
+  color: #93c5fd;
+}
+
+body.dark-mode .guide-bullet {
+  color: #93c5fd;
+}

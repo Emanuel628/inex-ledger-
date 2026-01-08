@@ -1,0 +1,25 @@
+# dependencies
+node_modules/
+
+# environment files
+.env
+.env.*
+
+# backups (VERY IMPORTANT)
+Backups/
+Backups VERY IMPORTANT/
+
+# temp files
+temp-*.js
+*.txt
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+# build / release artifacts
+luna/release/
+luna/dist/
+*.exe
+*.msi
+*.dmg

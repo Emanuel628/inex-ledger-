@@ -1,0 +1,174 @@
+import React, { useEffect, useRef, useState } from "react";
+import "./ProfileIntake.css";
+
+const STORAGE_KEY = "userIdentity";
+
+const ProfileIntake = ({ onNavigate = () => {}, canGoBack = false }) => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [form, setForm] = useState(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      return stored
+        ? JSON.parse(stored)
+        : { fullName: "", address: "", ssn: "", dob: "" };
+    } catch (e) {
+      return { fullName: "", address: "", ssn: "", dob: "" };
+    }
+  });
+
+  const burgerRef = useRef(null);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (!menuOpen) return;
+      if (
+        burgerRef.current &&
+        !burgerRef.current.contains(e.target) &&
+        menuRef.current &&
+        !menuRef.current.contains(e.target)
+      ) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("click", handler);
+    return () => document.removeEventListener("click", handler);
+  }, [menuOpen]);
+
+  const handleChange = (field) => (e) => {
+    const next = { ...form, [field]: e.target.value };
+    setForm(next);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    } catch (err) {
+      /* ignore */
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(form));
+    } catch (err) {
+      /* ignore */
+    }
+    alert("Saved locally. For production, this must be sent securely to your servers.");
+  };
+
+  return (
+    <div className="profile-page">
+      <header className="profile-header">
+        <div className="top-controls">
+          <div className="menu-container">
+            {menuOpen && (
+              <div
+                style={{ position: "fixed", inset: 0, zIndex: 150, background: "transparent" }}
+                onClick={() => setMenuOpen(false)}
+              />
+            )}
+            <div
+              className="hamburger"
+              ref={burgerRef}
+              onClick={(e) => {
+                e.stopPropagation();
+                setMenuOpen((o) => !o);
+              }}
+            >
+              <div />
+              <div />
+              <div />
+            </div>
+            <div className="dropdown-menu" ref={menuRef} style={{ display: menuOpen ? "block" : "none" }}>
+              <a href="#" onClick={(e) => { e.preventDefault(); setMenuOpen(false); onNavigate("dashboard"); }}>Dashboard</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); setMenuOpen(false); onNavigate("livebudget"); }}>Track Spending</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); setMenuOpen(false); onNavigate("snapshot"); }}>Debt Snapshot</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); setMenuOpen(false); onNavigate("budget"); }}>Money Coach</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); setMenuOpen(false); onNavigate("goals"); }}>Goals</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); setMenuOpen(false); onNavigate("import"); }}>Bank Statements</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); setMenuOpen(false); onNavigate("onboarding"); }}>Onboarding</a>
+              <a className="active">Settings</a>
+              <a href="/Local/Luna Login" onClick={(e) => { e.preventDefault(); setMenuOpen(false); window.location.replace("/Local/Luna Login"); }}>Logout</a>
+            </div>
+          </div>
+        </div>
+        <div className="header-text">
+          <div className="title">Verification</div>
+          <div className="subtitle">
+            Securely collect details needed for loan pre-qualification.
+          </div>
+        </div>
+      </header>
+
+      {canGoBack && (
+        <button className="mobile-back-btn" type="button" onClick={() => onNavigate("back")}>
+          ‹
+        </button>
+      )}
+
+      <form className="profile-card" onSubmit={handleSubmit}>
+        <div className="field">
+          <label htmlFor="fullName">Full name</label>
+          <input
+            id="fullName"
+            type="text"
+            value={form.fullName}
+            onChange={handleChange("fullName")}
+            placeholder="Jane Q. Doe"
+            required
+          />
+        </div>
+
+        <div className="field">
+          <label htmlFor="address">Address</label>
+          <textarea
+            id="address"
+            value={form.address}
+            onChange={handleChange("address")}
+            placeholder="Street, City, State, ZIP"
+            rows={3}
+            required
+          />
+        </div>
+
+        <div className="field">
+          <label htmlFor="ssn">SSN (last 4 or full if required)</label>
+          <input
+            id="ssn"
+            type="text"
+            value={form.ssn}
+            onChange={handleChange("ssn")}
+            placeholder="123-45-6789"
+            maxLength={11}
+            required
+          />
+        </div>
+
+        <div className="field">
+          <label htmlFor="dob">Date of birth</label>
+          <input
+            id="dob"
+            type="date"
+            value={form.dob}
+            onChange={handleChange("dob")}
+            required
+          />
+        </div>
+
+        <div className="hint">
+          Data is stored locally for now. In production, send this over an encrypted connection to your secure backend.
+        </div>
+
+        <div className="button-row">
+          <button className="secondary-btn" type="button" onClick={() => onNavigate("dashboard")}>
+            Cancel
+          </button>
+          <button className="primary-btn" type="submit">
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default ProfileIntake;

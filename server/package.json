@@ -1,0 +1,26 @@
+{
+  "name": "luna-server",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "prestart": "node scripts/applyMigrations.js",
+    "start": "node server.js",
+    "predev": "node scripts/applyMigrations.js",
+    "dev": "NODE_ENV=development nodemon server.js",
+    "migrate": "node scripts/applyMigrations.js"
+  },
+  "dependencies": {
+    "@simplewebauthn/server": "^5.4.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.1",
+    "express": "^4.19.2",
+    "express-rate-limit": "^8.2.1",
+    "pg": "^8.11.1",
+    "stripe": "^12.0.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^4.6.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
+}

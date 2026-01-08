@@ -1,0 +1,49 @@
+.hero-glue {
+  margin: 12px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  text-align: center;
+  max-width: 720px;
+  color: #0f172a;
+}
+
+.hero-role {
+  font-size: 0.7rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.hero-strip {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(37, 99, 235, 0.08);
+  color: #0f172a;
+  border: 1px solid rgba(37, 99, 235, 0.2);
+}
+
+.hero-strip-label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #1d4ed8;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.hero-strip p {
+  margin: 0;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.hero-reassurance {
+  margin: 0;
+  font-weight: 600;
+  color: #1f2a47;
+}

@@ -1,0 +1,59 @@
+.coaching-card {
+  border-radius: 18px;
+  padding: 20px;
+  background: #0f172a;
+  color: #f8fafc;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 50px -30px rgba(15, 23, 42, 0.9);
+  margin-bottom: 36px;
+}
+
+body.light-mode .coaching-card {
+  background: #f8fafc;
+  color: #0f172a;
+  border-color: rgba(15, 118, 255, 0.15);
+  box-shadow: 0 20px 50px -30px rgba(15, 23, 42, 0.2);
+}
+
+.coaching-title h3 {
+  margin: 4px 0 12px;
+  font-size: 1.4rem;
+}
+
+.coaching-headline {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.coaching-body p {
+  margin: 0 0 8px;
+  line-height: 1.4;
+}
+
+.coaching-encouragement {
+  font-style: italic;
+}
+
+.coaching-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin: 16px 0;
+  color: #cbd5f5;
+}
+
+.coaching-card .primary-btn {
+  width: 100%;
+  padding: 12px 0;
+  border-radius: 999px;
+  background: #38bdf8;
+  color: #0f172a;
+  font-weight: 700;
+  border: none;
+}
+
+body.light-mode .coaching-card .primary-btn {
+  background: #2563eb;
+  color: #ffffff;
+}
