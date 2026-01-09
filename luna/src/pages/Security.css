@@ -43,6 +43,18 @@ body.dark-mode .security-page {
   line-height: 1.5;
 }
 
+.security-hero .vault-tradeoff {
+  margin-top: 16px;
+  max-width: 640px;
+  color: rgba(15, 23, 42, 0.75);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+body.dark-mode .security-hero .vault-tradeoff {
+  color: rgba(226, 232, 240, 0.75);
+}
+
 .manifest-section {
   margin: 32px auto 0;
   max-width: 840px;

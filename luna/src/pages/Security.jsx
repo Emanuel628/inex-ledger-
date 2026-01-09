@@ -1,6 +1,7 @@
 import React from "react";
 import { usePrivacyActions } from "../hooks/usePrivacyActions";
 import TopRightControls from "../components/TopRightControls.jsx";
+import VaultLockControls from "../components/vault/VaultLockControls.jsx";
 import "./Security.css";
 
 const STATUS_CARDS = [
@@ -70,11 +71,16 @@ const Security = () => {
         <p className="eyebrow">Luna 1.0</p>
         <div className="security-hero-menu">
           <TopRightControls activePage="security" onNavigate={handleNavigate} />
+          <VaultLockControls />
         </div>
         <h1>Security &amp; Privacy</h1>
         <p className="subtitle">
           The Gatekeeper, Health Brain, and AI chat work because you stay in control. This live scorecard
           shows exactly how Luna protects your data.
+        </p>
+        <p className="vault-tradeoff">
+          The vault stays sealed until you unlock it with your password, which keeps Luna from reading your encrypted profile. Dashboards,
+          syncing, and AI guidance all pause while the vault is locked, so unlock when you want to work and lock again before stepping away.
         </p>
       </section>
 

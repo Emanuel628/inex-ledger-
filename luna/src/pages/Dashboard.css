@@ -200,8 +200,73 @@
   margin-top: 16px;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+  .dashboardPage {
+    padding: 0;
+  }
+
   .dashboardColumn {
-    padding: 24px 16px 48px;
+    width: 100%;
+    padding: 16px 16px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .dashboard-topRightControls {
+    position: sticky;
+    top: 0;
+    right: 0;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    background: transparent;
+    z-index: 2000;
+  }
+
+  .dashCard {
+    padding: 16px;
+    margin-bottom: 0;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+  }
+
+  .hudInner {
+    width: 100%;
+    padding: 0;
+  }
+
+  .hudRow {
+    width: 100%;
+    gap: 6px;
+  }
+
+  .hudSecondaryValue,
+  .cardSubtext,
+  .cardMeta {
+    display: none;
+  }
+
+  .hudSummaryText {
+    margin: 0;
+  }
+
+  .progressBar {
+    height: 6px;
+    margin: 10px 0;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .progressFill {
+    border-radius: 999px;
+  }
+
+  .dashCard h2,
+  .dashCard h3 {
+    font-size: 1.1rem;
+  }
+
+  .paceStatus {
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
   }
 }

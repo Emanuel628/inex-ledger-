@@ -47,6 +47,7 @@ import {
   CURRENT_USER_EVENT,
   ONBOARDING_STATUS_EVENT,
 } from "./utils/userStorage";
+import { initializeVaultAutoLock, lockVault } from "./security/vaultLock";
 
 const LOGIN_STATUS_KEY = "lunaLoggedIn";
 const HEALTH_CONSOLE_KEY = "healthConsoleEnabled";
@@ -413,19 +414,30 @@ export default function App() {
     return () => window.removeEventListener("storage-collision", handleCollision);
   }, []);
 
-  useEffect(() => {
-    const setSynced = () => storageManager.setState("synced");
-    window.addEventListener("profile-updated", setSynced);
-    window.addEventListener("live-budget-updated", setSynced);
-    return () => {
-      window.removeEventListener("profile-updated", setSynced);
-      window.removeEventListener("live-budget-updated", setSynced);
-    };
-  }, []);
+    useEffect(() => {
+      const setSynced = () => storageManager.setState("synced");
+      window.addEventListener("profile-updated", setSynced);
+      window.addEventListener("live-budget-updated", setSynced);
+      return () => {
+        window.removeEventListener("profile-updated", setSynced);
+        window.removeEventListener("live-budget-updated", setSynced);
+      };
+    }, []);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return undefined;
-    const params = new URLSearchParams(window.location.search);
+    useEffect(() => {
+      const cleanup = initializeVaultAutoLock();
+      return () => cleanup();
+    }, []);
+
+    useEffect(() => {
+      const handleAuthChange = () => lockVault("auth_change");
+      window.addEventListener("auth-updated", handleAuthChange);
+      return () => window.removeEventListener("auth-updated", handleAuthChange);
+    }, []);
+
+    useEffect(() => {
+      if (typeof window === "undefined") return undefined;
+      const params = new URLSearchParams(window.location.search);
     const urlEnabled = params.get("debug") === "health";
     if (urlEnabled) {
       try {

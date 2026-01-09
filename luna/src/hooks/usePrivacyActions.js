@@ -1,4 +1,4 @@
-import { storageManager } from "../utils/storageManager";
+import { storageFacade } from "../storage/storageFacade";
 
 const clearIndexedDB = async () => {
   if (typeof window === "undefined" || !window.indexedDB) return;
@@ -33,8 +33,7 @@ const notifyBackend = async (url) => {
 export const usePrivacyActions = () => {
   const nuclearWipe = async () => {
     if (typeof window !== "undefined") {
-      storageManager.clear();
-      localStorage.clear();
+      storageFacade.clearVaultOnly();
       await clearIndexedDB();
     }
 

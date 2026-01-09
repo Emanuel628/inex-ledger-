@@ -10,7 +10,7 @@ import {
   getLatestPlan,
   onPlanUpdate,
 } from "../lib/payPeriodPlannerStore";
-import { buildKey, readNamespacedItem, writeNamespacedItem } from "../utils/userStorage";
+import { storageFacade } from "../storage/storageFacade";
 const MODE_KEY = "budgetMode";
 const TXN_KEY = "liveBudgetTransactions";
 const SAVED_SPLIT_KEY = "savedBudgetSplit";
@@ -24,7 +24,7 @@ const DEFAULT_PROFILE = {
 
 const readStoredProfile = () => {
   try {
-    const stored = readNamespacedItem("moneyProfile");
+    const stored = storageFacade.get("moneyProfile");
     if (!stored) return { ...DEFAULT_PROFILE };
     const parsed = JSON.parse(stored);
     if (!parsed || typeof parsed !== "object") return { ...DEFAULT_PROFILE };
@@ -36,7 +36,7 @@ const readStoredProfile = () => {
 
 const loadLiveBudgetTransactions = () => {
   try {
-    const stored = readNamespacedItem(TXN_KEY, "[]");
+    const stored = storageFacade.get(TXN_KEY, "[]");
     const parsed = JSON.parse(stored);
     return Array.isArray(parsed) ? parsed : [];
   } catch (e) {
@@ -587,7 +587,7 @@ const Budget = ({ onNavigate = () => {} }) => {
     if (!plan.mode) return;
     if (plan.mode !== lastMode) {
       try {
-        writeNamespacedItem(MODE_KEY, plan.mode);
+      storageFacade.set(MODE_KEY, plan.mode);
       } catch (e) {
         /* ignore */
       }
@@ -607,7 +607,7 @@ const Budget = ({ onNavigate = () => {} }) => {
     }
     if (leftover > best) {
       try {
-        writeNamespacedItem(bestKey, String(leftover));
+        storageFacade.set(bestKey, String(leftover));
       } catch (e) {
         /* ignore */
       }
@@ -739,7 +739,7 @@ const Budget = ({ onNavigate = () => {} }) => {
     setProfile((prev) => {
       const next = { ...prev, [field]: raw };
         try {
-          writeNamespacedItem("moneyProfile", JSON.stringify(next));
+        storageFacade.set("moneyProfile", JSON.stringify(next));
           window.dispatchEvent(new Event("profile-updated"));
         } catch (err) {
           /* ignore */

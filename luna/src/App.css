@@ -82,3 +82,108 @@
     opacity: 1;
   }
 }
+
+.vault-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.vault-modal {
+  background: #0f172a;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  padding: 1.5rem;
+  border-radius: 14px;
+  box-shadow: 0 30px 60px rgba(15, 23, 42, 0.55);
+  width: min(420px, 90%);
+}
+
+.vault-modal label {
+  display: block;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+.vault-modal input {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(15, 23, 42, 0.6);
+  color: #fff;
+}
+
+.vault-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.vault-error {
+  color: #f87171;
+  font-size: 0.85rem;
+  margin: 0.5rem 0 0;
+}
+
+.vault-lock-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+/* Mobile baseline */
+@media (max-width: 768px) {
+  #root {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  h1 {
+    font-size: 1.25rem;
+  }
+
+  h2 {
+    font-size: 1.1rem;
+  }
+
+  p {
+    font-size: 0.95rem;
+  }
+
+  button {
+    min-height: 44px;
+    padding-inline: 16px;
+  }
+
+  .topRightControls {
+    position: sticky;
+    top: 0;
+    align-self: flex-end;
+    background: var(--color-surface);
+    margin: 0 -16px;
+    padding: 8px 16px 0;
+    z-index: 1500;
+  }
+
+  .vault-lock-controls {
+    position: sticky;
+    top: 0;
+    z-index: 1400;
+    background: var(--color-surface);
+    padding: 10px 16px;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  }
+}

@@ -3,6 +3,8 @@ const KEY_PREFIX = "luna";
 const CURRENT_USER_EVENT = "luna-current-user-changed";
 const ONBOARDING_STATUS_EVENT = "luna-onboarding-status-changed";
 
+import { storageFacade } from "../storage/storageFacade";
+
 const normalizeEmail = (value) =>
   String(value || "")
     .trim()
@@ -38,14 +40,11 @@ const dispatchOnboardingStatus = (userId, completed) => {
   );
 };
 
-const getCurrentUserId = () => {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem(CURRENT_USER_KEY);
-};
+const getCurrentUserId = () => storageFacade.get(CURRENT_USER_KEY);
 
 const setCurrentUserId = (userId) => {
   if (typeof window === "undefined" || !userId) return;
-  localStorage.setItem(CURRENT_USER_KEY, userId);
+  storageFacade.set(CURRENT_USER_KEY, userId);
   dispatchUserChange(userId);
 };
 
@@ -54,36 +53,11 @@ const buildKey = (key, userId = getCurrentUserId()) => {
   return `${KEY_PREFIX}_${userId}_${key}`;
 };
 
-const namespacedItem = (key) => {
-  const namespaced = buildKey(key);
-  return namespaced || key;
-};
+const readNamespacedItem = (key, fallback = null) => storageFacade.get(key, fallback);
 
-const readNamespacedItem = (key, fallback = null) => {
-  if (typeof window === "undefined") return fallback;
-  const ns = namespacedItem(key);
-  const stored = localStorage.getItem(ns);
-  if (stored !== null) {
-    return stored;
-  }
-  return localStorage.getItem(key) ?? fallback;
-};
+const writeNamespacedItem = (key, value) => storageFacade.set(key, value);
 
-const writeNamespacedItem = (key, value) => {
-  if (typeof window === "undefined") return;
-  const ns = namespacedItem(key);
-  localStorage.setItem(ns, value);
-  if (ns !== key) {
-    localStorage.removeItem(key);
-  }
-};
-
-const removeNamespacedItem = (key) => {
-  if (typeof window === "undefined") return;
-  const ns = namespacedItem(key);
-  localStorage.removeItem(ns);
-  localStorage.removeItem(key);
-};
+const removeNamespacedItem = (key) => storageFacade.remove(key);
 
 const markOnboardingComplete = (userId = getCurrentUserId()) => {
   if (!userId) return;

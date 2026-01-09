@@ -2,6 +2,8 @@ import React, { useMemo, useRef, useState } from "react";
 import "./CreateAccount.css";
 import { IdentityIsolationBadge } from "../components/ui/IdentityIsolationBadge";
 import { deriveUserId, setCurrentUserId, buildKey } from "../utils/userStorage";
+import { generateVaultSalt } from "../security/vaultUtils";
+import { VAULT_KDF_ARGON2 } from "../security/securityConstants";
 
 const STORAGE_KEY = "lunaCreateAccount";
 const IDENTITY_KEY = "userIdentity";
@@ -140,6 +142,8 @@ const CreateAccount = ({ onNavigate = () => {} }) => {
       zip: "",
       email: form.email,
       password: form.password,
+      vaultSalt: generateVaultSalt(),
+      vaultKdf: VAULT_KDF_ARGON2,
     };
     const userId = deriveUserId(identityPayload.email);
     identityPayload.userId = userId;
@@ -149,13 +153,15 @@ const CreateAccount = ({ onNavigate = () => {} }) => {
     const nextIndex = {
       ...accountsIndex,
       ...(normalizedEmail ? {
-        [normalizedEmail]: {
-          userId,
-          email: form.email,
-          password: form.password,
-          identity: identityPayload,
-          updatedAt: new Date().toISOString(),
-        },
+      [normalizedEmail]: {
+        userId,
+        email: form.email,
+        password: form.password,
+        identity: identityPayload,
+        vaultSalt: identityPayload.vaultSalt,
+        vaultKdf: identityPayload.vaultKdf,
+        updatedAt: new Date().toISOString(),
+      },
       } : {}),
     };
     writeAccountsIndex(nextIndex);
