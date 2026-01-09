@@ -16,13 +16,7 @@ const isTestRuntime =
   typeof process !== "undefined" && (process.env.NODE_ENV === "test" || process.env.VITEST);
 
 const loadArgon2 = async () => {
-  try {
-    const argonModule = await import("argon2-browser");
-    return argonModule.default ?? argonModule;
-  } catch (error) {
-    console.warn("Argon2 module unavailable, falling back to PBKDF2", error?.message);
-    return null;
-  }
+  return null;
 };
 
 export const base64ToBytes = (value) => {
@@ -39,6 +33,7 @@ export const deriveVMK = async (password, saltBytes, kdf = VAULT_KDF_ARGON2) => 
   if (!password) {
     throw new Error("Password is required for VMK derivation");
   }
+  kdf = VAULT_KDF_PBKDF2;
   const salt = saltBytes instanceof Uint8Array ? saltBytes : new Uint8Array(saltBytes || []);
   if (kdf === VAULT_KDF_ARGON2 && !isTestRuntime) {
     const argon2 = await loadArgon2();
