@@ -1,6 +1,7 @@
 import express from "express";
 import crypto from "node:crypto";
 import { signToken } from "../middleware/auth.middleware.js";
+import pool from "../db.js";
 
 const router = express.Router();
 const usersByEmail = new Map();
@@ -81,7 +82,7 @@ function verifyPassword(password, stored) {
   return crypto.timingSafeEqual(hashBuffer, derivedBuffer);
 }
 
-router.post("/auth/register", (req, res) => {
+router.post("/auth/register", async (req, res) => {
   const email = normalizeEmail(req.body?.email);
   const password = req.body?.password;
 
@@ -89,29 +90,37 @@ router.post("/auth/register", (req, res) => {
     return res.status(400).json({ error: "Email and password are required" });
   }
 
-  if (usersByEmail.has(email)) {
-    return res.status(409).json({ error: "Email already registered" });
-  }
+  const hashedPassword = hashPassword(password);
 
-  const user = {
-    id: crypto.randomUUID(),
-    email,
-    password_hash: hashPassword(password),
-    email_verified: false,
-    role: "owner",
-    created_at: new Date().toISOString()
-  };
+  const client = await pool.connect();
+  try {
+    const existing = await client.query(
+      "SELECT id FROM users WHERE email = $1",
+      [email]
+    );
 
-  usersByEmail.set(email, user);
-  const { token, expiresAt } = createVerificationToken(email);
-  const verificationLink = buildVerificationLink(req, token);
-  res.status(201).json({
-    message: "Registration successful",
-    verification: {
-      expiresAt,
-      link: verificationLink
+    if (existing.rowCount > 0) {
+      return res.status(409).json({ error: "Email already registered" });
     }
-  });
+
+    const result = await client.query(
+      `
+      INSERT INTO users (id, email, password_hash, created_at)
+      VALUES ($1, $2, $3, NOW())
+      RETURNING id, email
+      `,
+      [crypto.randomUUID(), email, hashedPassword]
+    );
+
+    const user = result.rows[0];
+
+    return res.status(201).json({
+      success: true,
+      user
+    });
+  } finally {
+    client.release();
+  }
 });
 
 router.post("/auth/send-verification", (req, res) => {

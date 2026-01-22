@@ -1,5 +1,5 @@
 /* =========================================================
-   Luna Business – Server Entry (V1 Routes Only)
+   InEx Ledger – Server Entry (V1 Routes Only)
    ========================================================= */
 
 import express from "express";
@@ -36,5 +36,5 @@ app.use(exportsRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Luna Business API running on port ${PORT}`);
+  console.log(`InEx Ledger API running on port ${PORT}`);
 });

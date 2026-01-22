@@ -143,7 +143,7 @@
       recurring: readJsonArray("lb_recurring"),
       meta: {
         exportedAt: new Date().toISOString(),
-        app: "Luna Business"
+        app: "InEx Ledger"
       }
     };
 

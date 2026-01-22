@@ -231,7 +231,7 @@ const TRANSLATIONS = {
     receipts_description:
       'Receipts can be uploaded and attached to transactions.',
     receipts_tier_notice_title:
-      'You need Luna Business V1 to upload receipts.',
+      'You need InEx Ledger V1 to upload receipts.',
     receipts_tier_notice_cta: 'Upgrade now',
     receipts_upload_legend: 'Upload receipt',
     receipts_label_file: 'Receipt file',
@@ -355,8 +355,8 @@ const TRANSLATIONS = {
     settings_save_changes: 'Save changes',
     settings_changes_saved: 'Settings updated.',
     settings_business_ids_saved: 'Business IDs saved',
-    upgrade_title: 'Upgrade to Luna Business V1',
-    upgrade_free_heading: 'Upgrade to Luna Business V1',
+    upgrade_title: 'Upgrade to InEx Ledger V1',
+    upgrade_free_heading: 'Upgrade to InEx Ledger V1',
     upgrade_free_intro:
       'Go beyond the free tier with the features you need to keep clean books.',
     upgrade_benefit_receipts: 'Receipts',
@@ -365,10 +365,10 @@ const TRANSLATIONS = {
     upgrade_benefit_recurring: 'Recurring transactions',
     upgrade_benefit_tax: 'Real-time tax estimates',
     upgrade_cta: 'View subscription options',
-    upgrade_v1_banner_title: 'You are on Luna Business V1.',
+    upgrade_v1_banner_title: 'You are on InEx Ledger V1.',
     upgrade_v1_banner_body:
       'Future releases will add optional bank syncing and smarter automation.',
-    upgrade_footer_note: 'Luna Business - V1 Beta - 2026',
+    upgrade_footer_note: 'InEx Ledger - V1 Beta - 2026',
     subscription_title: 'Subscription'
   },
   es: {
@@ -486,7 +486,7 @@ const TRANSLATIONS = {
     receipts_description:
       'Puedes subir recibos y vincularlos a transacciones.',
     receipts_tier_notice_title:
-      'Necesitas Luna Business V1 para subir recibos.',
+      'Necesitas InEx Ledger V1 para subir recibos.',
     receipts_tier_notice_cta: 'Actualiza ahora',
     receipts_upload_legend: 'Subir recibo',
     receipts_label_file: 'Archivo del recibo',
@@ -609,8 +609,8 @@ const TRANSLATIONS = {
     settings_save_changes: 'Guardar cambios',
     settings_changes_saved: 'Configuración guardada.',
     settings_business_ids_saved: 'Identificadores guardados',
-    upgrade_title: 'Actualiza a Luna Business V1',
-    upgrade_free_heading: 'Actualiza a Luna Business V1',
+    upgrade_title: 'Actualiza a InEx Ledger V1',
+    upgrade_free_heading: 'Actualiza a InEx Ledger V1',
     upgrade_free_intro:
       'Ve más allá del plan gratuito con las funciones necesarias para mantener tus libros limpios.',
     upgrade_benefit_receipts: 'Recibos',
@@ -619,10 +619,10 @@ const TRANSLATIONS = {
     upgrade_benefit_recurring: 'Transacciones recurrentes',
     upgrade_benefit_tax: 'Estimaciones fiscales en tiempo real',
     upgrade_cta: 'Ver opciones de suscripción',
-    upgrade_v1_banner_title: 'Estás en Luna Business V1.',
+    upgrade_v1_banner_title: 'Estás en InEx Ledger V1.',
     upgrade_v1_banner_body:
       'Las futuras versiones añadirán sincronización bancaria opcional y automatizaciones más inteligentes.',
-    upgrade_footer_note: 'Luna Business - V1 Beta - 2026',
+    upgrade_footer_note: 'InEx Ledger - V1 Beta - 2026',
     subscription_title: 'Suscripción'
   },
   fr: {
@@ -741,7 +741,7 @@ const TRANSLATIONS = {
     receipts_description:
       'Vous pouvez téléverser des reçus et les lier à des transactions.',
     receipts_tier_notice_title:
-      'Vous avez besoin de Luna Business V1 pour téléverser des reçus.',
+      'Vous avez besoin de InEx Ledger V1 pour téléverser des reçus.',
     receipts_tier_notice_cta: 'Passez à V1',
     receipts_upload_legend: 'Téléverser un reçu',
     receipts_label_file: 'Fichier du reçu',
@@ -864,8 +864,8 @@ const TRANSLATIONS = {
     settings_save_changes: 'Enregistrer les modifications',
     settings_changes_saved: 'Paramètres enregistrés.',
     settings_business_ids_saved: 'Identifiants enregistrés',
-    upgrade_title: 'Passez à Luna Business V1',
-    upgrade_free_heading: 'Passez à Luna Business V1',
+    upgrade_title: 'Passez à InEx Ledger V1',
+    upgrade_free_heading: 'Passez à InEx Ledger V1',
     upgrade_free_intro:
       'Ajoutez les fonctionnalités premium dont vous avez besoin pour garder les livres propres.',
     upgrade_benefit_receipts: 'Reçus',
@@ -874,10 +874,10 @@ const TRANSLATIONS = {
     upgrade_benefit_recurring: 'Transactions récurrentes',
     upgrade_benefit_tax: 'Estimations fiscales en temps réel',
     upgrade_cta: 'Voir les options de souscription',
-    upgrade_v1_banner_title: 'Vous êtes sur Luna Business V1.',
+    upgrade_v1_banner_title: 'Vous êtes sur InEx Ledger V1.',
     upgrade_v1_banner_body:
       'Les prochaines versions ajouteront une synchronisation bancaire optionnelle et des automatisations plus intelligentes.',
-    upgrade_footer_note: 'Luna Business - V1 Beta - 2026',
+    upgrade_footer_note: 'InEx Ledger - V1 Beta - 2026',
     subscription_title: 'Abonnement'
   }
 };
