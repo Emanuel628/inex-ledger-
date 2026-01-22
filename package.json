@@ -1,23 +1,16 @@
 {
-  "name": "inex-ledger-frontend",
+  "name": "inex-ledger",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "InEx Ledger frontend",
   "engines": {
     "node": ">=18"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "start": "node server.js"
   },
   "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^5.1.1",
-    "vite": "^5.4.0"
+    "express": "^5.2.1",
+    "pg": "^8.17.2"
   }
 }
