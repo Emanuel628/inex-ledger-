@@ -118,6 +118,9 @@ router.post("/auth/register", async (req, res) => {
       success: true,
       user
     });
+  } catch (err) {
+    console.error("Register error:", err);
+    return res.status(500).json({ error: "Registration failed" });
   } finally {
     client.release();
   }
