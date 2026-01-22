@@ -1,18 +1,23 @@
 {
-  "name": "luna-business",
-  "version": "0.1.0",
+  "name": "inex-ledger-frontend",
+  "version": "1.0.0",
   "private": true,
-  "description": "InEx Ledger – calm, CPA-friendly business ledger",
   "type": "module",
+  "description": "InEx Ledger frontend",
   "engines": {
     "node": ">=18"
   },
   "scripts": {
-    "dev": "node server.js",
-    "start": "node server.js"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "express": "^5.2.1",
-    "pg": "^8.17.2"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.1.1",
+    "vite": "^5.4.0"
   }
 }
