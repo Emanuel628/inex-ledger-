@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ShieldCheck } from "lucide-react";
+import { buildApiUrl } from "../lib/api";
 
 const Success = () => {
   const [status, setStatus] = useState("verifying");
@@ -9,7 +10,7 @@ const Success = () => {
     let handle;
     const pollStatus = async () => {
       try {
-        const response = await fetch("/api/user/subscription-status");
+        const response = await fetch(buildApiUrl("/api/user/subscription-status"));
         if (!response.ok) {
           throw new Error("Unable to fetch subscription status.");
         }

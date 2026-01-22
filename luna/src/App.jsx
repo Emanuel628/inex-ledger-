@@ -48,6 +48,7 @@ import {
   ONBOARDING_STATUS_EVENT,
 } from "./utils/userStorage";
 import { initializeVaultAutoLock, lockVault } from "./security/vaultLock";
+import { buildApiUrl } from "./lib/api.js";
 
 const LOGIN_STATUS_KEY = "lunaLoggedIn";
 const HEALTH_CONSOLE_KEY = "healthConsoleEnabled";
@@ -356,7 +357,7 @@ export default function App() {
   const fetchIdentity = useCallback(async () => {
     if (typeof window === "undefined") return;
     try {
-      const response = await fetch("/api/user/identity", {
+      const response = await fetch(buildApiUrl("/api/user/identity"), {
         method: "GET",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

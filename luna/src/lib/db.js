@@ -1,3 +1,5 @@
+import { buildApiUrl } from "./api";
+
 const SYNC_STORAGE_KEY = "luna_sync_mode";
 const defaultStore = new Map();
 
@@ -24,7 +26,7 @@ export const localDB = {
 export const clearCloudSync = async () => {
   if (typeof window === "undefined") return;
   try {
-    await fetch("/api/user/purge-vault", { method: "POST" });
+      await fetch(buildApiUrl("/api/user/purge-vault"), { method: "POST" });
   } catch (error) {
     console.warn("Cloud vault purge request failed", error);
   }

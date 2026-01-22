@@ -3,6 +3,7 @@ import "./ImportAnalyze.css";
 import TopRightControls from "../components/TopRightControls.jsx";
 import HeroGlue from "../components/HeroGlue";
 import { usePreferences } from "../contexts/PreferencesContext";
+import { buildApiUrl } from "../lib/api";
 
 const CATEGORY_MAP = [
   { key: "housing", match: ["rent", "mortgage", "zillow"] },
@@ -139,7 +140,7 @@ const ImportAnalyze = ({ onNavigate = () => {} }) => {
     setProcessing(true);
     setError("");
     try {
-      await fetch("/api/parse-upload", { method: "DELETE" });
+      await fetch(buildApiUrl("/api/parse-upload"), { method: "DELETE" });
       setRows([]);
       setFileName("");
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -320,7 +321,7 @@ async function sendToParserAPI(file) {
   // Expecting a backend endpoint /api/parse-upload that returns { rows: [{ date, desc, amount, category }] }
   const form = new FormData();
   form.append("file", file);
-  const res = await fetch("/api/parse-upload", {
+  const res = await fetch(buildApiUrl("/api/parse-upload"), {
     method: "POST",
     body: form,
   });

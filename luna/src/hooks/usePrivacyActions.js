@@ -1,4 +1,5 @@
 import { storageFacade } from "../storage/storageFacade";
+import { buildApiUrl } from "../lib/api";
 
 const clearIndexedDB = async () => {
   if (typeof window === "undefined" || !window.indexedDB) return;
@@ -22,7 +23,8 @@ const clearIndexedDB = async () => {
   }
 };
 
-const notifyBackend = async (url) => {
+const notifyBackend = async (path) => {
+  const url = buildApiUrl(path);
   try {
     await fetch(url, { method: "DELETE" });
   } catch (error) {

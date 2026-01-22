@@ -6,6 +6,11 @@
     "lb_recurring"
   ];
   let apiReady;
+  const API_BASE = "https://luna-finance-production.up.railway.app";
+  const buildApiUrl = (path) => {
+    if (typeof path !== "string") return API_BASE;
+    return path.startsWith("/") ? `${API_BASE}${path}` : `${API_BASE}/${path}`;
+  };
 
   async function apiAvailable() {
     if (typeof apiReady === "boolean") {
@@ -13,7 +18,7 @@
     }
 
     try {
-      const res = await fetch("/api/health");
+      const res = await fetch(buildApiUrl("/api/health"));
       apiReady = res.ok;
       return apiReady;
     } catch (err) {
@@ -64,7 +69,7 @@
 
   async function getPrivacySettings() {
     if (await apiAvailable()) {
-      const res = await fetch("/api/privacy/settings", {
+      const res = await fetch(buildApiUrl("/api/privacy/settings"), {
         headers: authHeaders()
       });
       if (res.ok) {
@@ -80,7 +85,7 @@
     persistLocalSettings(merged);
 
     if (await apiAvailable()) {
-      await fetch("/api/privacy/settings", {
+      await fetch(buildApiUrl("/api/privacy/settings"), {
         method: "PUT",
         headers: authHeaders(),
         body: JSON.stringify({
@@ -125,7 +130,7 @@
       .slice(0, 10)}.json`;
 
     if (await apiAvailable()) {
-      const res = await fetch("/api/privacy/export", {
+      const res = await fetch(buildApiUrl("/api/privacy/export"), {
         headers: authHeaders()
       });
 
@@ -162,7 +167,7 @@
 
   async function deleteBusinessData() {
     if (await apiAvailable()) {
-      const res = await fetch("/api/privacy/delete", {
+      const res = await fetch(buildApiUrl("/api/privacy/delete"), {
         method: "POST",
         headers: authHeaders(),
         body: JSON.stringify({ scope: "business_data" })

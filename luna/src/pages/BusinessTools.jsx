@@ -6,6 +6,7 @@ import HeroGlue from "../components/HeroGlue";
 import { useMoneyProfile } from "../hooks/useMoneyProfile";
 import { usePreferences } from "../contexts/PreferencesContext";
 import { readNamespacedItem } from "../utils/userStorage";
+import { buildApiUrl } from "../lib/api";
 
 const TXN_KEY = "liveBudgetTransactions";
 const IDENTITY_KEY = "userIdentity";
@@ -71,7 +72,7 @@ const BusinessTools = ({ onNavigate = () => {}, theme = "light" }) => {
       if (identity?.id) {
         headers["x-user-id"] = identity.id;
       }
-      const response = await fetch("/api/user/export-verification", {
+      const response = await fetch(buildApiUrl("/api/user/export-verification"), {
         method: "POST",
         headers,
         body: JSON.stringify(payload),

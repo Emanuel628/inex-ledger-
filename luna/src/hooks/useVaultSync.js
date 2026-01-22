@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { SovereigntyContext } from "../contexts/SovereigntyContext";
 import { localDB } from "../lib/db";
+import { buildApiUrl } from "../lib/api";
 
 export const useVaultSync = () => {
   const { syncMode } = useContext(SovereigntyContext);
@@ -14,7 +15,7 @@ export const useVaultSync = () => {
 
     if (syncMode === "cloud") {
       try {
-        await fetch("/api/vault/sync", {
+        await fetch(buildApiUrl("/api/vault/sync"), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

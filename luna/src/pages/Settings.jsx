@@ -16,6 +16,7 @@ import {
   saveHiddenDashboardCards,
 } from "../utils/dashboardHiddenCards";
 import { SyncToggle } from "../components/settings/SyncToggle";
+import { buildApiUrl } from "../lib/api";
 
 const IDENTITY_KEY = "userIdentity";
 const HEALTH_CONSOLE_KEY = "healthConsoleEnabled";
@@ -250,7 +251,7 @@ const Settings = ({
     setParserBusy(true);
     setParserMessage("");
     try {
-      const res = await fetch("/api/parse-upload", { method: "DELETE" });
+      const res = await fetch(buildApiUrl("/api/parse-upload"), { method: "DELETE" });
       if (!res.ok) throw new Error("Request failed");
       setParserMessage("Uploaded statements removed.");
     } catch (e) {
